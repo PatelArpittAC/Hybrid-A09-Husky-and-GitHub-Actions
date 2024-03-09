@@ -1,0 +1,51 @@
+name: Validate Terraform Formatting and Syntax
+ 
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+ 
+permissions:
+  id-token: write
+  contents: read
+ 
+jobs:
+  validate_formatting_syntax:
+    runs-on: ubuntu-latest
+    name: Validate Terraform Formatting and Syntax
+    outputs:
+      CHECK_STATUS: "${{ env.CHECK_STATUS }}"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+ 
+      - name: Configure Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.2.4
+ 
+      - name: Validate Terraform Formatting and Syntax
+        run: |
+          set +e
+ 
+          echo "CHECK_STATUS=0" >> $GITHUB_ENV
+ 
+          # Run terraform fmt and validate commands
+          terraform fmt -check -recursive
+          FMT_STATUS=$?
+ 
+          terraform validate
+          VALIDATE_STATUS=$?
+ 
+          # Set CHECK_STATUS based on the status of formatting and validation
+          if [[ $FMT_STATUS -ne 0 || $VALIDATE_STATUS -ne 0 ]]; then
+            echo "❌ Terraform formatting or syntax validation failed" >> $GITHUB_STEP_SUMMARY
+            echo "CHECK_STATUS=1" >> $GITHUB_ENV
+          fi
+ 
+      - name: Process check
+        if: always()
+        run: exit $CHECK_STATUS
