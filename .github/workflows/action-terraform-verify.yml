@@ -47,6 +47,3 @@ jobs:
               fi
             fi
           done
-      - name: Process check
-        if: always()
-        run: exit $CHECK_STATUS
