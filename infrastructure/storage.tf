@@ -9,7 +9,7 @@ data "azurerm_resource_group" "existing" {
 
 # Resource block to create an Azure Storage Account
 resource "azurerm_storage_account" "example" {
-  name                     = "arpitstorageaccount"
+  name                     = "arpitstorageacc"
   resource_group_name      = data.azurerm_resource_group.existing.name # Reference to the existing resource group
   location                 = "canadacentral"                          # Location where the storage account will be created
   account_tier             = "Standard"
