@@ -1,15 +1,15 @@
 name: Validate Terraform Formatting and Syntax
- 
+
 on:
   pull_request:
     branches:
       - main
       - master
- 
+
 permissions:
   id-token: write
   contents: read
- 
+
 jobs:
   validate_formatting_syntax:
     runs-on: ubuntu-latest
@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 2
- 
+
       - name: Configure Terraform
         uses: hashicorp/setup-terraform@v2
         with:
@@ -45,7 +45,7 @@ jobs:
             echo "❌ Terraform formatting or syntax validation failed" >> $GITHUB_STEP_SUMMARY
             echo "CHECK_STATUS=1" >> $GITHUB_ENV
           fi
- 
+
       - name: Process check
         if: always()
         run: exit $CHECK_STATUS
